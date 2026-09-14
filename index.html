@@ -1,892 +1,828 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#07111f">
-<title>Trilha do Conhecimento · Técnico em Logística</title>
-<style>
-:root{
-  --bg:#050a12;--bg2:#0a1424;--surface:rgba(12,24,41,.74);--surface2:rgba(17,34,57,.86);
-  --primary:#2ee6a6;--secondary:#38bdf8;--accent:#8b5cf6;--gold:#f7c948;--danger:#ff6678;--text:#eef7ff;
-  --muted:#9fb5c9;--border:rgba(255,255,255,.16);--blur-glass:20px;--radius:24px;
-  --shadow:0 18px 50px rgba(0,0,0,.34),0 4px 18px rgba(0,0,0,.25);
-  --inner:inset 0 1px 0 rgba(255,255,255,.08), inset 0 -20px 60px rgba(255,255,255,.02);
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:linear-gradient(-45deg,#050a12,#081a2e,#160f2e,#06221b);background-size:400% 400%;
-  animation:bgShift 15s ease-in-out infinite alternate;overflow-x:hidden;
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
-  background-image:
-    radial-gradient(circle at 20% 10%,rgba(46,230,166,.35) 0 1px,transparent 2px),
-    radial-gradient(circle at 80% 30%,rgba(56,189,248,.3) 0 1px,transparent 2px);
-  background-size:90px 90px,120px 120px;z-index:-1;
-}
-@keyframes bgShift{0%{background-position:0% 50%}100%{background-position:100% 50%}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-@keyframes pulse{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}50%{transform:scale(1.045);filter:drop-shadow(0 0 14px rgba(46,230,166,.35))}}
-@keyframes glow{0%,100%{box-shadow:0 0 0 rgba(56,189,248,0)}50%{box-shadow:0 0 28px rgba(56,189,248,.34)}}
-@keyframes shimmer{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
-@keyframes slideIn{from{opacity:0;transform:translateX(120%)}to{opacity:1;transform:none}}
-@keyframes pop{0%{transform:scale(.65);opacity:.2}70%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
-@keyframes rain{0%{transform:translateY(-10vh) rotate(0);opacity:1}100%{transform:translateY(115vh) rotate(720deg);opacity:0}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.container{width:min(1180px,92vw);margin:0 auto}
-.screen{display:none;min-height:100vh;padding:32px 0 70px;animation:fadeUp .45s ease-out}
-.screen.active{display:block}
-.glass{
-  position:relative;background:var(--surface);backdrop-filter:blur(var(--blur-glass));-webkit-backdrop-filter:blur(var(--blur-glass));
-  border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow),var(--inner);overflow:hidden;
-}
-.glass:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(140deg,rgba(255,255,255,.08),transparent 28%,transparent 75%,rgba(255,255,255,.03))}
-h1,h2,h3{margin:0;letter-spacing:-.035em}
-h1{font-size:clamp(2.6rem,6vw,5.4rem);line-height:.95;font-weight:900;background:linear-gradient(90deg,var(--primary),var(--secondary),#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
-h2{font-size:clamp(2rem,4vw,3.1rem);font-weight:900}
-h3{font-size:1.25rem}
-p{font-size:1.05rem;line-height:1.75;color:var(--text)}
-.muted{color:var(--muted)}
-.topbar{
-  position:sticky;top:12px;z-index:50;margin-bottom:24px;
-  display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 16px;
-  background:rgba(5,10,18,.78);border:1px solid var(--border);backdrop-filter:blur(14px);border-radius:18px;box-shadow:var(--shadow)
-}
-.hud{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.badge,.hud-item{
-  display:inline-flex;gap:8px;align-items:center;padding:8px 11px;border-radius:999px;
-  border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:.9rem
-}
-.button{
-  border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:13px 18px;font-weight:800;cursor:pointer;
-  color:#06121a;background:linear-gradient(135deg,var(--primary),#9cf9dd);box-shadow:0 10px 25px rgba(46,230,166,.18);
-  transition:.2s ease;position:relative;overflow:hidden
-}
-.button:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 14px 30px rgba(46,230,166,.28)}
-.button.secondary{background:linear-gradient(135deg,var(--secondary),#a6e7ff)}
-.button.ghost{color:var(--text);background:rgba(255,255,255,.05);box-shadow:none}
-.button.danger{background:linear-gradient(135deg,#ff7788,#ffb0ba)}
-.button[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
-.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:22px;align-items:stretch;padding-top:8vh}
-.hero-card{padding:38px}
-.logo-orb{
-  width:112px;height:112px;border-radius:32px;display:grid;place-items:center;font-size:4.6rem;
-  background:linear-gradient(135deg,rgba(46,230,166,.18),rgba(56,189,248,.12));border:1px solid rgba(255,255,255,.14);
-  animation:pulse 3s ease-in-out infinite;box-shadow:0 0 55px rgba(46,230,166,.1)
-}
-.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
-.rule-card{padding:18px}
-summary{cursor:pointer;font-weight:800}
-.rules ul{padding-left:20px;color:var(--muted);line-height:1.7}
-.warning{margin-top:16px;padding:16px 18px;border-left:4px solid var(--gold);background:rgba(247,201,72,.08);border-radius:14px}
-input,textarea{
-  width:100%;color:var(--text);background:rgba(3,9,16,.52);border:1px solid var(--border);border-radius:16px;
-  padding:15px 16px;outline:none;font:inherit;transition:.2s
-}
-input:focus,textarea:focus{border-color:rgba(46,230,166,.6);box-shadow:0 0 0 4px rgba(46,230,166,.08)}
-.input-wrap{margin-top:24px}
-.input-wrap label{display:block;font-weight:800;margin-bottom:8px}
-.err{font-size:.88rem;color:#ff9ba7;margin-top:6px}
-.map-intro{padding:26px;margin-bottom:20px}
-.path{position:relative;display:grid;gap:18px;padding:10px 0 8px}
-.path:before{content:"";position:absolute;left:54px;top:54px;bottom:54px;border-left:2px dashed rgba(255,255,255,.18);animation:shimmer 3s linear infinite}
-.station{
-  position:relative;display:grid;grid-template-columns:112px 1fr auto;gap:18px;align-items:center;padding:18px 20px;
-  cursor:pointer;transition:.22s;z-index:1
-}
-.station:hover{transform:translateX(4px)}
-.station.locked{filter:grayscale(.65);opacity:.6;cursor:not-allowed}
-.station.current{animation:glow 2.2s infinite}
-.station.completed{border-color:rgba(46,230,166,.35)}
-.station-emoji{height:76px;width:76px;border-radius:24px;display:grid;place-items:center;font-size:2.4rem;background:rgba(255,255,255,.05);border:1px solid var(--border)}
-.station-num{font-size:.8rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
-.station-title{font-size:1.25rem;font-weight:900;margin:3px 0 6px}
-.station-desc{color:var(--muted);line-height:1.5}
-.status{font-weight:900}
-.station.locked .status{color:#9ea9b7}.station.current .status{color:var(--secondary)}.station.completed .status{color:var(--primary)}
-.station-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.station-meta span{font-size:.78rem;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.045);border:1px solid var(--border)}
-.read-shell{padding:0;overflow:visible}
-.read-progress{position:sticky;top:0;z-index:20;height:5px;background:rgba(255,255,255,.04);border-radius:99px;overflow:hidden}
-.read-progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:width .12s linear}
-.station-head{padding:24px 26px;display:flex;gap:16px;align-items:center;justify-content:space-between}
-.station-head-main{display:flex;gap:16px;align-items:center}
-.station-icon{font-size:2.8rem;width:64px;height:64px;display:grid;place-items:center;border-radius:18px;background:rgba(255,255,255,.05)}
-.read-content{padding:0 28px 26px;max-width:920px;margin:auto}
-.reading-text{font-size:1.08rem;line-height:1.85}
-.callout{padding:17px 18px;margin:18px 0;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.035)}
-.callout strong{display:block;margin-bottom:6px}
-.callout.context{border-color:rgba(46,230,166,.25);background:rgba(46,230,166,.06)}
-.callout.info{border-color:rgba(56,189,248,.25);background:rgba(56,189,248,.06)}
-.callout.warn{border-color:rgba(247,201,72,.28);background:rgba(247,201,72,.06)}
-.keyword{color:#a7ffe1;border-bottom:2px dotted var(--primary);cursor:help;text-shadow:0 0 8px rgba(46,230,166,.2);font-weight:800}
-.continue-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0 4px;position:sticky;bottom:10px}
-.countdown{color:var(--gold);font-weight:800}
-.quiz-grid{display:grid;gap:18px}
-.quiz-card{padding:22px}
-.question-label{font-size:.8rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
-.question{font-size:1.15rem;font-weight:850;line-height:1.5;margin:8px 0 16px}
-.option-grid{display:grid;gap:10px}
-.option{
-  text-align:left;color:var(--text);background:rgba(255,255,255,.035);border:1px solid var(--border);
-  border-radius:15px;padding:15px 16px;cursor:pointer;transition:.18s;font:inherit
-}
-.option:hover:not([disabled]){transform:translateX(3px);border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.06)}
-.option.correct{border-color:rgba(46,230,166,.7);background:rgba(46,230,166,.14)}
-.option.wrong{border-color:rgba(255,102,120,.75);background:rgba(255,102,120,.12)}
-.option[disabled]{cursor:default}
-.explanation{margin-top:14px;padding:14px 15px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid var(--border);display:none;animation:fadeUp .3s ease-out}
-.explanation.show{display:block}
-.score-line{margin:16px 0;color:var(--muted);font-weight:700}
-.write-card{padding:22px;margin-top:18px}
-.criteria{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 14px}
-.criteria span{padding:10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);font-size:.88rem}
-.char-row{display:flex;justify-content:space-between;align-items:center;margin:9px 0;font-size:.88rem;color:var(--muted)}
-.char-bar{height:11px;border-radius:999px;background:#1a2534;overflow:hidden}
-.char-bar>i{display:block;height:100%;width:0;background:var(--danger);transition:width .2s,background .2s}
-.key-chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
-.chip{padding:8px 11px;border-radius:999px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.32);color:#e8ddff;cursor:pointer}
-.success{padding:28px;text-align:center;margin-top:18px;display:none}.success.show{display:block;animation:pop .45s ease-out}.success-icon{font-size:4rem}
-.final-hero{text-align:center;padding:35px}
-.final-name{color:var(--primary);font-weight:900}
-.report-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:20px}
-.metric{padding:18px;text-align:center}
-.metric .v{font-size:1.5rem;font-weight:900;margin-top:7px}
-.metric.big{grid-column:span 2}.metric.big .v{font-size:3rem;color:var(--primary)}
-.trophy{font-size:4.5rem;animation:pulse 2s infinite}
-.final-note{padding:18px;margin-top:16px;text-align:center}
-.glossary-fab{position:fixed;right:22px;bottom:22px;z-index:80;width:56px;height:56px;border-radius:50%;border:1px solid var(--border);background:rgba(8,18,31,.92);color:var(--text);font-size:1.4rem;cursor:pointer;box-shadow:var(--shadow)}
-.drawer{position:fixed;top:0;right:-420px;width:min(420px,92vw);height:100vh;background:rgba(5,12,21,.98);border-left:1px solid var(--border);z-index:79;padding:22px;overflow:auto;transition:.3s}
-.drawer.open{right:0}
-.drawer h3{margin-bottom:14px}
-.glossary-item{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)}
-.tooltip{
-  position:fixed;z-index:9999;width:min(330px,82vw);padding:14px 15px;border-radius:16px;background:rgba(9,18,30,.96);
-  border:1px solid rgba(255,255,255,.18);box-shadow:0 18px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
-  opacity:0;pointer-events:none;transform:translateY(4px);transition:.18s
-}
-.tooltip.show{opacity:1;transform:none}
-.tooltip-title{font-weight:900;margin-bottom:5px}
-.tooltip-pin{float:right}
-.toast-wrap{position:fixed;top:18px;right:18px;z-index:9998;display:grid;gap:10px;width:min(360px,90vw)}
-.toast{padding:14px 15px;border-radius:16px;background:rgba(18,12,19,.96);border:1px solid rgba(255,102,120,.35);box-shadow:var(--shadow);animation:slideIn .28s ease-out;overflow:hidden}
-.toast b{display:block;margin-bottom:4px}
-.toast small{color:var(--muted)}
-.toast-bar{height:3px;background:var(--danger);margin:10px -15px -14px;animation:toastBar 4s linear forwards}
-@keyframes toastBar{from{width:100%}to{width:0}}
-.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:100}
-.confetti span{position:absolute;top:-10vh;font-size:1.45rem;animation:rain var(--d) linear forwards;left:var(--x)}
-.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;place-items:center;z-index:200;padding:20px}
-.modal-back.show{display:grid}
-.modal{width:min(420px,95vw);padding:22px}
-.small-key{position:fixed;left:7px;bottom:6px;font-size:8px;opacity:.18;cursor:pointer;z-index:90}
-.section-switch{display:flex;gap:8px;align-items:center;margin-bottom:16px}
-.kbd{font-family:ui-monospace,monospace;padding:2px 7px;border:1px solid var(--border);border-radius:7px;background:rgba(255,255,255,.05)}
-.print-only{display:none}
-@media(max-width:900px){
- .hero{grid-template-columns:1fr;padding-top:3vh}.hero-grid{grid-template-columns:1fr}
- .report-grid{grid-template-columns:repeat(2,1fr)}.metric.big{grid-column:span 2}
- .station{grid-template-columns:74px 1fr}.station>div:last-child{grid-column:2}
- .criteria{grid-template-columns:1fr}.read-content{padding:0 18px 20px}.topbar{align-items:flex-start;flex-direction:column}
-}
-@media(max-width:620px){h1{font-size:3rem}.hero-card{padding:26px}.station{padding:16px}.station-emoji{width:62px;height:62px;font-size:2rem}.station-head{padding:18px}.report-grid{grid-template-columns:1fr}.metric.big{grid-column:span 1}}
-@media(prefers-color-scheme:light){
- :root{--bg:#eef6ff;--surface:rgba(255,255,255,.82);--surface2:#fff;--text:#122234;--muted:#5c7187;--border:rgba(18,34,52,.16)}
- body{background:linear-gradient(-45deg,#e8f8f1,#e8f2ff,#efe9ff,#e8fff8);color:var(--text)}
- .topbar,.drawer{background:rgba(245,250,255,.86)}input,textarea{background:rgba(255,255,255,.8);color:var(--text)}.option{color:var(--text)}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
-@media print{
- @page{size:A4;margin:2cm}
- html,body{background:#fff!important;color:#111!important}
- body:before,.topbar,.glossary-fab,.drawer,.tooltip,.toast-wrap,.small-key,.button,.confetti{display:none!important}
- .screen{display:none!important;min-height:0!important;padding:0!important}.print-only{display:block!important}
- .print-doc{font-family:Arial,sans-serif;color:#111}
- .print-page{break-after:auto;margin-bottom:24px}
- .print-cover{min-height:240mm;display:flex;flex-direction:column;justify-content:center}
- .print-cover h1{font-size:38px;color:#111;background:none;-webkit-text-fill-color:initial}
- .print-cover .kicker{color:#456;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
- .print-doc h2{font-size:24px;border-bottom:2px solid #111;padding-bottom:7px;margin:28px 0 14px}
- .print-doc h3{font-size:17px;margin:18px 0 8px}
- .print-doc p,.print-doc li{font-size:11.5pt;line-height:1.6}
- .print-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}.print-box{border:1px solid #bbb;padding:10px}
- .student-text{white-space:pre-wrap;overflow:visible;overflow-wrap:anywhere;word-break:break-word;height:auto;max-height:none;line-height:1.6;border:1px solid #bbb;padding:12px}
- .writing-section{break-inside:auto;page-break-inside:auto}
- .quiz-row{border:1px solid #bbb;padding:10px;margin:10px 0}
- .footer{position:fixed;bottom:.7cm;left:0;right:0;text-align:center;font-size:9px;color:#555}
- .footer:after{content:"Trilha do Conhecimento · " attr(data-student) " · Pág. " counter(page)}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trilha do Conhecimento: Gestão de Estoques</title>
+  <style>
+    /* ==========================================================================
+       1. PALETA DE CORES E VARIÁVEIS CSS (Glassmorphism & Corporate Clean)
+       ========================================================================== */
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311b92 100%);
+      --glass-bg: rgba(30, 41, 59, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      
+      --color-primary: #8b5cf6;       
+      --color-primary-hover: #7c3aed;
+      --color-secondary: #06b6d4;     
+      --color-accent: #f59e0b;        
+      --color-success: #10b981;       
+      --color-danger: #ef4444;        
+      --color-text-main: #f8fafc;     
+      --color-text-muted: #94a3b8;    
+      
+      --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --border-radius-lg: 24px;
+      --border-radius-md: 16px;
+      --border-radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--color-text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 40px;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ==========================================================================
+       2. COMPONENTES GLASSMORPHISM & HUD
+       ========================================================================== */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--border-radius-lg);
+      padding: 32px;
+      margin-bottom: 24px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #hud {
+      position: sticky;
+      top: 12px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--border-radius-md);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      margin-bottom: 24px;
+    }
+
+    .hud-item { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.95rem; }
+    .hud-badge { background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+    .hud-vacilos { color: var(--color-danger); }
+
+    .btn-teacher-reset {
+      background: transparent; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.4; transition: opacity 0.2s;
+    }
+    .btn-teacher-reset:hover { opacity: 1.0; }
+
+    /* ==========================================================================
+       3. BOTÕES E ELEMENTOS INTERATIVOS
+       ========================================================================== */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 16px 24px; border: none; border-radius: var(--border-radius-md);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+      color: white; font-size: 1.05rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); transition: all 0.2s ease;
+    }
+
+    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    .input-text {
+      width: 100%; padding: 16px; background: rgba(0, 0, 0, 0.25);
+      border: 2px solid var(--glass-border); border-radius: var(--border-radius-md);
+      color: white; font-size: 1rem; outline: none; transition: border-color 0.2s; margin-bottom: 20px;
+    }
+    .input-text:focus { border-color: var(--color-secondary); }
+    textarea.input-text { min-height: 160px; resize: vertical; line-height: 1.6; }
+
+    /* ==========================================================================
+       4. MAPA DA TRILHA
+       ========================================================================== */
+    .trail-map { display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 20px 0; position: relative; }
+    .node-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; width: 100%; }
+    
+    .node-btn {
+      width: 90px; height: 90px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 2.2rem; cursor: pointer;
+      background: var(--glass-bg); box-shadow: 0 8px 25px rgba(0,0,0,0.5); transition: all 0.3s ease; position: relative;
+    }
+
+    .node-btn.locked { background: rgba(51, 65, 85, 0.8); border-color: rgba(255,255,255,0.05); cursor: not-allowed; opacity: 0.6; }
+    .node-btn.current { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); border-color: #ffffff; transform: scale(1.15); box-shadow: 0 0 30px rgba(6, 182, 212, 0.8); animation: pulse 2s infinite; }
+    .node-btn.completed { background: var(--color-success); border-color: #a7f3d0; }
+
+    @keyframes pulse {
+      0% { transform: scale(1.1); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+      70% { transform: scale(1.18); box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); }
+      100% { transform: scale(1.1); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+    }
+
+    .node-label {
+      margin-top: 12px; font-weight: 700; font-size: 1rem; text-align: center;
+      background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--glass-border);
+    }
+
+    .node-connector { position: absolute; width: 6px; background: rgba(255,255,255,0.15); top: 90px; height: 40px; z-index: 1; }
+    .node-connector.active { background: linear-gradient(to bottom, var(--color-success), var(--color-primary)); }
+    .node-wrapper:nth-child(odd) { transform: translateX(-40px); }
+    .node-wrapper:nth-child(even) { transform: translateX(40px); }
+
+    /* ==========================================================================
+       5. PASSO A PASSO (LIÇÃO)
+       ========================================================================== */
+    .step-progress-bar { display: flex; gap: 10px; margin-bottom: 28px; }
+    .step-dot { flex: 1; height: 8px; background: rgba(255,255,255,0.15); border-radius: 4px; transition: background 0.3s; }
+    .step-dot.active { background: var(--color-secondary); }
+    .step-dot.completed { background: var(--color-success); }
+
+    .narrative-box { font-size: 1.1rem; line-height: 1.8; color: #e2e8f0; margin-bottom: 28px; text-align: justify; }
+    .highlight-box {
+      background: rgba(139, 92, 246, 0.15); border-left: 4px solid var(--color-primary);
+      padding: 18px; border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0; margin: 24px 0; font-style: italic;
+    }
+
+    .quiz-question { font-size: 1.15rem; font-weight: 700; margin-bottom: 18px; line-height: 1.5; }
+    .quiz-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    
+    .option-btn {
+      background: rgba(255, 255, 255, 0.05); border: 2px solid var(--glass-border);
+      border-radius: var(--border-radius-md); padding: 18px; color: var(--color-text-main);
+      text-align: left; font-size: 1rem; cursor: pointer; transition: all 0.2s; line-height: 1.4;
+    }
+    .option-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); border-color: var(--color-secondary); }
+    .option-btn.correct { background: rgba(16, 185, 129, 0.25) !important; border-color: var(--color-success) !important; color: #a7f3d0 !important; font-weight: bold; }
+    .option-btn.incorrect { background: rgba(239, 68, 68, 0.25) !important; border-color: var(--color-danger) !important; color: #fca5a5 !important; }
+
+    .feedback-box { padding: 18px; border-radius: var(--border-radius-md); margin-bottom: 24px; font-size: 0.95rem; line-height: 1.6; }
+    .feedback-box.correct { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--color-success); }
+    .feedback-box.incorrect { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--color-danger); }
+
+    .char-counter { text-align: right; font-size: 0.9rem; color: var(--color-text-muted); margin-top: -12px; margin-bottom: 24px; }
+    .char-counter.valid { color: var(--color-success); font-weight: bold; }
+
+    /* ==========================================================================
+       6. TOAST, MODAL & IMPRESSÃO
+       ========================================================================== */
+    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; max-width: 350px; }
+    .toast {
+      background: rgba(239, 68, 68, 0.95); color: white; padding: 16px 20px; border-radius: var(--border-radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5); font-weight: 600; font-size: 0.95rem; line-height: 1.4;
+      animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-left: 6px solid #7f1d1d;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+
+    .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; overflow: hidden; }
+    .confetti { position: absolute; font-size: 1.5rem; animation: fall 3s linear infinite; }
+    @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(105vh) rotate(360deg); opacity: 0; } }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Estilização Oficial para Impressão do Boletim */
+    @media print {
+      body { background: white !important; color: #111 !important; margin: 0; padding: 0; }
+      body::before { display: none; }
+      #hud, .btn, #toast-container, .step-progress-bar { display: none !important; }
+      .container { max-width: 100%; padding: 0; }
+      .glass-card {
+        background: transparent !important; border: none !important; box-shadow: none !important;
+        padding: 0 !important; margin: 0 !important; color: #000 !important; backdrop-filter: none !important;
+      }
+      .printable-area { display: block !important; width: 100%; }
+      
+      /* Elementos do Relatório */
+      h2, h3, h4, h5 { color: #000 !important; margin-top: 15px; }
+      .print-header { border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; text-align: center; }
+      .print-summary { border: 1px solid #000; padding: 15px; margin-bottom: 25px; border-radius: 4px; }
+      
+      .detailed-report-section { 
+        page-break-inside: avoid; 
+        border: 1px solid #ccc !important; 
+        padding: 15px !important; 
+        margin-bottom: 20px !important; 
+        background: #fdfdfd !important;
+        border-radius: 4px;
+      }
+      .print-written-box {
+        font-family: 'Courier New', Courier, monospace; 
+        font-size: 10pt; 
+        border-left: 3px solid #666; 
+        padding: 10px; 
+        background: #f4f4f4; 
+        margin-top: 10px;
+        white-space: pre-wrap;
+      }
+      .print-correct { color: #059669 !important; font-weight: bold; }
+      .print-incorrect { color: #dc2626 !important; font-weight: bold; }
+    }
+  </style>
 </head>
 <body>
-<div id="app">
-  <section id="screen-a" class="screen active">
-    <div class="container hero">
-      <div class="glass hero-card">
-        <div class="logo-orb">🚚</div>
-        <div style="margin-top:24px">
-          <div class="badge">🎓 Educação Profissional Paulista · Técnico em Logística</div>
-          <h1 style="margin-top:16px">Trilha do<br>Conhecimento</h1>
-          <p class="muted" style="max-width:760px">Missão especial: tecnologias de automação logística dos transportes — do planejamento à roteirização.</p>
-        </div>
-        <div class="input-wrap">
-          <label for="studentName">Nome completo do aluno</label>
-          <input id="studentName" maxlength="120" placeholder="Digite seu nome para entrar em campo">
-          <div id="nameError" class="err"></div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-            <button id="startBtn" class="button">🚀 INICIAR MISSÃO</button>
-            <button id="resumeBtn" class="button ghost" style="display:none">↩️ Retomar</button>
-          </div>
-        </div>
-        <details class="glass rule-card rules" style="margin-top:20px">
-          <summary>📜 Saiba como funciona ▼</summary>
-          <ul>
-            <li>Você passará por duas estações conectadas: Natura e Braspress.</li>
-            <li>Cada estação tem narrativa, 2 desafios de raciocínio e uma atividade escrita de 250 caracteres.</li>
-            <li>Palavras-chave técnicas podem ser exploradas com o mouse ou toque para ver definições.</li>
-            <li>Saídas da página e tentativas de colar na resposta escrita registram vacilos.</li>
-            <li>Seu progresso fica salvo localmente e pode ser retomado após atualizar a página.</li>
+
+  <div class="container">
+    <!-- HUD FIXO -->
+    <div id="hud" style="display: none;">
+      <div class="hud-item"><span>👤</span> <span id="hud-user-name">Aluno</span></div>
+      <div class="hud-item hud-badge"><span>⏱️</span> <span id="hud-timer">00:00</span></div>
+      <div class="hud-item hud-badge hud-vacilos"><span>⚠️ Vacilos:</span> <span id="hud-vacilos-count">0</span></div>
+      <button class="btn-teacher-reset" onclick="openTeacherModal()" title="Área do Professor">⚙️</button>
+    </div>
+
+    <!-- TELA A: BOAS-VINDAS -->
+    <div id="screen-welcome" class="screen active">
+      <div class="glass-card" style="text-align: center;">
+        <h1 style="font-size: 2.2rem; margin-bottom: 12px; background: linear-gradient(to right, var(--color-primary), var(--color-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          Trilha do Conhecimento
+        </h1>
+        <p style="color: var(--color-text-muted); margin-bottom: 24px; font-size: 1.1rem;">
+          Técnico em Logística — Planejamento e Controle de Estoques
+        </p>
+
+        <div style="text-align: left; background: rgba(0,0,0,0.2); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 28px; font-size: 1rem; line-height: 1.6;">
+          <p style="font-weight: bold; color: var(--color-secondary); margin-bottom: 12px; font-size: 1.1rem;">📜 DIRETRIZES DA ATIVIDADE:</p>
+          <ul style="margin-left: 24px; margin-bottom: 12px;">
+            <li>Esta avaliação contém <strong>2 Estações Críticas</strong> de logística operacional.</li>
+            <li>Seu progresso, respostas e textos são salvos no sistema automaticamente em tempo real.</li>
           </ul>
-        </details>
-        <div class="warning">⚠️ <strong>Aviso sobre vacilos:</strong> o app é seu parceiro de campo. Olhou para outra aba? Tentou colar texto? Ele percebe. 😈</div>
-      </div>
-      <div class="glass hero-card" style="display:flex;flex-direction:column;justify-content:space-between">
-        <div>
-          <div class="badge">🗺️ Unidade 4 · Estudo de caso: transportes</div>
-          <h2 style="margin-top:18px">Seu campo de missão</h2>
-          <p>Você vai analisar como tecnologias de automação apoiam operações logísticas da <strong>Natura</strong> e da <strong>Braspress</strong>, avançando depois para a <strong>roteirização</strong> no TMS.</p>
-        </div>
-        <div class="hero-grid">
-          <div class="glass rule-card"><div style="font-size:2rem">📦</div><strong>Distribuição</strong><div class="muted">estoque, plataformas e rastreamento</div></div>
-          <div class="glass rule-card"><div style="font-size:2rem">🛰️</div><strong>Transporte</strong><div class="muted">automação, TMS e rotas</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="screen-b" class="screen">
-    <div class="container">
-      <div class="topbar">
-        <div class="hud">
-          <span class="hud-item">⏱️ <b id="hudTime">00:00</b></span>
-          <span class="hud-item">💀 <b id="hudMistakes">0</b></span>
-          <span class="hud-item">🏆 <b id="hudProgress">0/2</b></span>
-        </div>
-        <div class="hud">
-          <span class="hud-item">👤 <b id="hudName">Aluno</b></span>
-          <button class="button ghost" id="glossaryBtn">📖 Glossário</button>
-        </div>
-      </div>
-      <div class="glass map-intro">
-        <div class="badge">🧭 MAPA DA TRILHA</div>
-        <h2 style="margin-top:12px">A jornada está aberta.</h2>
-        <p class="muted">Conclua uma estação para desbloquear a próxima. Estações concluídas permanecem disponíveis para revisão.</p>
-      </div>
-      <div id="path" class="path"></div>
-    </div>
-  </section>
-
-  <section id="screen-c" class="screen">
-    <div class="container">
-      <div class="topbar">
-        <div class="hud"><button class="button ghost" id="backMap">← Mapa</button><span class="hud-item" id="stepBadge">Leitura</span></div>
-        <div class="hud"><span class="hud-item">⏱️ <b id="hudTimeC">00:00</b></span><span class="hud-item">💀 <b id="hudMistakesC">0</b></span></div>
-      </div>
-      <div class="glass read-shell">
-        <div class="read-progress"><i id="readProgressBar"></i></div>
-        <div class="station-head">
-          <div class="station-head-main">
-            <div id="stationIcon" class="station-icon">📦</div>
-            <div><div id="stationKicker" class="station-num">ESTAÇÃO</div><h2 id="stationTitle">Título</h2></div>
+          <div style="background: rgba(239, 68, 68, 0.15); border-left: 4px solid var(--color-danger); padding: 12px; border-radius: 0 8px 8px 0; margin-top: 16px;">
+            <strong style="color: #fca5a5;">🚨 REGULAMENTO ANTI-VACILO (PDCA DE FOCO):</strong><br>
+            É estritamente proibido sair da aba, minimizar a janela ou usar "Ctrl+V". Cada infração detectada pelo sistema gera um <strong>Vacilo (−1,0 ponto)</strong> direto na média final!
           </div>
-          <div class="badge" id="stationDuration">≈ 25 min</div>
         </div>
-        <div id="contentArea" class="read-content"></div>
+
+        <input type="text" id="input-student-name" class="input-text" placeholder="Digite seu Nome Completo..." autocomplete="off">
+        <button class="btn" onclick="startJourney()">🚀 INICIAR AVALIAÇÃO LOGÍSTICA</button>
       </div>
     </div>
-  </section>
 
-  <section id="screen-d" class="screen">
-    <div class="container">
-      <div class="glass final-hero">
-        <div class="trophy" id="finalTrophy">🏆</div>
-        <div class="badge">MISSÃO CONCLUÍDA</div>
-        <h1 style="margin-top:12px">Muito bom, <span id="finalName" class="final-name">aluno</span>!</h1>
-        <p id="finalMessage" class="muted" style="max-width:780px;margin:14px auto"></p>
-        <div class="report-grid">
-          <div class="glass metric"><div>✅ Acertos</div><div class="v" id="mCorrect">0/4</div></div>
-          <div class="glass metric"><div>📝 Redações</div><div class="v" id="mWriting">0/2</div></div>
-          <div class="glass metric"><div>📚 Nota de conteúdo</div><div class="v" id="mContent">0,0</div></div>
-          <div class="glass metric"><div>💀 Vacilos</div><div class="v" id="mMistakes">0</div></div>
-          <div class="glass metric"><div>⏱️ Tempo</div><div class="v" id="mTime">00:00</div></div>
-          <div class="glass metric big"><div>⭐ MÉDIA FINAL</div><div class="v" id="mFinal">0,0</div></div>
-        </div>
-        <div class="final-note glass" id="finalHint"></div>
-        <div style="margin-top:18px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
-          <button id="pdfBtn" class="button">📄 Exportar Boletim em PDF</button>
-          <button id="reviewBtn" class="button ghost">🔁 Revisar trilha</button>
-        </div>
+    <!-- TELA B: MAPA DA TRILHA -->
+    <div id="screen-map" class="screen">
+      <div class="glass-card" style="text-align: center; padding: 24px; margin-bottom: 20px;">
+        <h2 style="margin-bottom: 8px;">🗺️ Mapa Operacional</h2>
+        <p style="color: var(--color-text-muted); font-size: 0.95rem;">Conclua as estações na ordem para liberar seu boletim</p>
+      </div>
+      <div id="trail-map-container" class="trail-map"></div>
+    </div>
+
+    <!-- TELA C: LIÇÃO -->
+    <div id="screen-lesson" class="screen">
+      <div class="step-progress-bar">
+        <div id="step-dot-0" class="step-dot"></div>
+        <div id="step-dot-1" class="step-dot"></div>
+        <div id="step-dot-2" class="step-dot"></div>
+      </div>
+      <div class="glass-card">
+        <div id="lesson-step-content"></div>
       </div>
     </div>
-  </section>
-</div>
 
-<button id="glossaryFab" class="glossary-fab" aria-label="Abrir glossário">📖</button>
-<aside id="drawer" class="drawer">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-    <div><div class="badge">📖 Glossário</div><h3 style="margin-top:10px">Palavras-chave da missão</h3></div>
-    <button class="button ghost" id="drawerClose">✕</button>
-  </div>
-  <div id="glossaryList" style="margin-top:18px"></div>
-</aside>
+    <!-- TELA D: RELATÓRIO FINAL / BOLETIM IMPRESSO -->
+    <div id="screen-final" class="screen">
+      <div class="glass-card printable-area">
+        
+        <!-- Cabeçalho (Foco na Impressão) -->
+        <div class="print-header">
+          <h2 style="font-size: 1.8rem; color: var(--color-secondary); margin-bottom: 8px; text-transform: uppercase;">Boletim de Desempenho Técnico</h2>
+          <p style="color: var(--color-text-muted); font-size: 1.1rem;">Componente Curricular: Gestão e Controle de Estoques</p>
+        </div>
 
-<div id="tooltip" class="tooltip"><span class="tooltip-pin">📌</span><div id="tipTitle" class="tooltip-title"></div><div id="tipText"></div></div>
-<div id="toastWrap" class="toast-wrap"></div>
-<div id="confetti" class="confetti"></div>
+        <!-- Resumo Geral -->
+        <div class="print-summary" style="background: rgba(0,0,0,0.25); border-radius: var(--border-radius-md); text-align: left; margin-bottom: 24px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 1.05rem;">
+            <tr>
+              <td style="padding: 8px 0;"><strong>Nome do Estudante:</strong></td>
+              <td style="text-align: right;"><span id="final-student-name" style="font-weight: bold;">-</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0;"><strong>Tempo Total de Resolução:</strong></td>
+              <td style="text-align: right;"><span id="final-time">-</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0;"><strong>Questões Objetivas (Quizzes):</strong></td>
+              <td style="text-align: right;"><span id="final-quizzes">-</span> de 4 certas</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0;"><strong>Nota Bruta de Conteúdo:</strong></td>
+              <td style="text-align: right;"><span id="final-raw-score">-</span> / 10,0</td>
+            </tr>
+            <tr style="color: var(--color-danger); border-bottom: 1px solid var(--glass-border);">
+              <td style="padding: 8px 0;"><strong>Penalidades (Falhas de Foco/Vacilos):</strong></td>
+              <td style="text-align: right;">−<span id="final-vacilos">-</span>,0 pt(s)</td>
+            </tr>
+            <tr>
+              <td style="padding: 16px 0 8px 0; font-size: 1.4rem; color: var(--color-accent);"><strong>MÉDIA FINAL VALIDADA:</strong></td>
+              <td style="text-align: right; padding: 16px 0 8px 0; font-size: 1.4rem; color: var(--color-accent);"><strong><span id="final-grade">-</span> / 10,0</strong></td>
+            </tr>
+          </table>
+        </div>
 
-<div id="teacherModal" class="modal-back">
-  <div class="glass modal">
-    <div class="badge">🔑 Área do professor</div>
-    <h3 style="margin-top:12px">Resetar a missão</h3>
-    <p class="muted">Insira a senha para limpar o estado salvo neste navegador.</p>
-    <input id="teacherPass" type="password" placeholder="Senha">
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="button ghost" id="teacherCancel">Fechar</button><button class="button danger" id="teacherReset">Resetar</button></div>
-  </div>
-</div>
-<div class="small-key" id="teacherKey" title="Área do professor">🔑</div>
+        <div id="final-feedback-msg" class="highlight-box" style="text-align: left; margin-bottom: 32px;"></div>
 
-<div id="printHost" class="print-only"></div>
+        <!-- CONTAINER DO RELATÓRIO DETALHADO (Injetado via JS) -->
+        <div id="final-detailed-report"></div>
 
-<script>
-"use strict";
-
-const STORAGE_KEY = "trilha_conhecimento_logistica_v3";
-const MIN_WRITING = 250;
-
-const glossary = {
-  "omnichannel": "Modelo integrado que utiliza múltiplos canais de venda, físicos ou digitais, permitindo entrega em lojas ou no domicílio, sem interrupções.",
-  "plataformas digitais integradas": "Integra informações de vendas, estoques, faturamento e transporte por ERP, WMS, TMS e aplicativos específicos, com monitoramento em tempo real.",
-  "geolocalização e rastreamento": "Permite monitorar a localização e o rastreamento do veículo e da carga em tempo real, gerando informações ao cliente final.",
-  "estoque descentralizado": "Diluição dos produtos em dois ou mais pontos distanciados geograficamente, sem concentrar o estoque em apenas um local.",
-  "hub logístico": "Ponto estratégico da rede de distribuição onde ocorre consolidação, armazenagem, classificação e redistribuição de mercadorias.",
-  "multimodalidade": "Sistema que combina dois ou mais modais de forma integrada em uma mesma operação, com um único contrato e responsabilidade centralizada.",
-  "tms": "Sistema de Gerenciamento de Transportes usado para planejar operações de transporte, incluindo roteirização, integração de ferramentas e rastreamento.",
-  "sorter": "Sistema Automatizado de Classificação de Encomendas usado para agilizar a separação e o envio dos volumes.",
-  "roteirização": "Elaboração do melhor roteiro e percurso para coletar e transportar mercadorias, considerando fatores como localização, horários, vias, capacidade e tipo de carga.",
-  "data center tier iii": "Data Center da Braspress projetado para suportar grande volume de tráfego de dados, com conceito TIER III e 100% de disponibilidade.",
-  "intermodalidade": "Uso combinado de diferentes modais; no caso citado nas orientações, pode ser necessário combinar rodoviário e aéreo para atender outras localidades dentro de prazos menores.",
-  "central de experiência": "Estrutura que monitora 24 horas o processo de operação e transporte da Natura, coletando informações para ações preventivas, alocação de recursos e identificação de gargalos."
-};
-
-const stations = [
-  {
-    id:"natura",
-    emoji:"📦",
-    title:"Natura · Distribuição inteligente",
-    desc:"Como planejamento, estoque, automação e monitoramento tornam a entrega rápida viável.",
-    duration:"≈ 25 min",
-    kicker:"ESTAÇÃO 01 · NATURA",
-    keywords:["omnichannel","plataformas digitais integradas","geolocalização e rastreamento","estoque descentralizado","central de experiência","TMS"],
-    narrative: [
-      `A central de distribuição acorda antes de você. {NOME}, sua primeira missão começa diante de um mapa do Brasil cheio de fluxos, pedidos e prazos. Duas clientes fizeram seus pedidos no mesmo dia e horário: uma está em Campinas (SP), outra em Salvador (BA). A promessa de entrega é de até 48 horas em várias localidades. O cenário parece uma teia enorme de pedidos, mas a lógica por trás dela é organizada: é preciso conhecer a demanda, mapear os fluxos e combinar pessoas, processos e tecnologia.`,
-      `Seu primeiro painel apresenta a estratégia de <KEY:omnichannel>. Na operação descrita no material, diferentes canais de venda, físicos ou digitais, podem participar da jornada do pedido, inclusive com entregas por lojas ou no domicílio. Isso significa que a logística não funciona isolada. Ela se integra aos pontos de venda, aos armazéns e ao faturamento. A conexão entre essas partes é reforçada por <KEY:plataformas digitais integradas>, reunindo informações de vendas, estoques, faturamento e transporte em sistemas como ERP, WMS e <KEY:TMS>.`,
-      `<CALL:context:🧠 Você no comando|Sua tarefa é pensar como quem desenha o fluxo: onde estão os estoques, quais regiões concentram demanda, como acompanhar o veículo e como fazer as informações circularem sem quebra entre os pontos da operação.</CALL>`,
-      `O próximo painel mostra a decisão que transformou o tempo de entrega. A Natura realizou um grande estudo da malha logística do país para aperfeiçoar o atendimento, reduzir prazos e reduzir custos de transporte. Com base na posição das fábricas e na demanda territorial, a empresa definiu a localização adequada de seus centros de distribuição. Em vez de concentrar tudo em um único lugar, adotou <KEY:estoque descentralizado>. O material registra dez centros de distribuição espalhados pelo território nacional e relaciona esse modelo à entrega de cerca de 50% dos produtos em até 48 horas.`,
-      `<CALL:info:💡 Sabia que?|Em alguns transportes especiais, carga e descarga podem acontecer em até 5 minutos. O material atribui essa agilidade ao uso de carretas automáticas e robôs, permitindo realizar a atividade sem contato humano.</CALL>`,
-      `Mas rapidez sem controle não sustenta uma operação confiável. Por isso entra a <KEY:geolocalização e rastreamento>, que permite acompanhar a localização do veículo e da carga em tempo real. Na Natura, todo o processo de operação e transporte é monitorado 24 horas por uma <KEY:central de experiência>. A estrutura coleta informações precisas, ajuda em ações preventivas, apoia a alocação de recursos, identifica gargalos e permite que consultores monitorem seus pedidos.`,
-      `<CALL:warn:⚠️ Atenção!|A promessa de prazo não nasce de um único equipamento. O próprio material mostra um conjunto: estudo e planejamento da malha, estoques em vários pontos, agilidade operacional, plataformas conectadas e controle contínuo.</CALL>`,
-      `Agora você percebe que a pergunta inicial — como viabilizar entregas rápidas em um país de grande extensão territorial e mobilidade complexa? — não é respondida por um atalho. Ela é respondida pelo desenho da rede e pela integração dos processos. Seu primeiro desafio termina com uma decisão: compreender que tecnologia só produz valor quando está conectada ao planejamento logístico e às necessidades regionais. Respire. A próxima estação vai levar você para dentro de uma transportadora de grande porte, onde automação e roteirização vão transformar a lógica das entregas em movimento.`
-    ],
-    questions:[
-      {
-        q:"Uma operação precisa reduzir prazos e custos ao mesmo tempo, atendendo regiões muito distantes entre si. Qual decisão, baseada no caso da Natura, ataca diretamente a concentração geográfica do estoque?",
-        options:["Concentrar todo o estoque em um único centro para facilitar o controle.","Distribuir o estoque em pontos geograficamente distanciados, mantendo dez centros de distribuição.","Retirar o rastreamento em tempo real para simplificar o processo.","Substituir o planejamento da malha por rotas definidas apenas no dia da entrega."],
-        correct:1,
-        explanation:"O material caracteriza o estoque descentralizado como a diluição dos produtos em dois ou mais pontos distanciados geograficamente e informa que a Natura divide seu estoque entre dez centros de distribuição."
-      },
-      {
-        q:"Duas etapas da operação estão funcionando, mas os dados de venda, estoque, faturamento e transporte estão separados. Qual intervenção está mais alinhada ao conceito apresentado na aula para tornar o processo monitorável em tempo real?",
-        options:["Criar estoques maiores sem integração de informações.","Eliminar o monitoramento para reduzir a quantidade de sistemas.","Integrar plataformas e sistemas como ERP, WMS, TMS e aplicativos específicos.","Usar apenas uma planilha para registrar os pedidos ao final do dia."],
-        correct:2,
-        explanation:"O material define plataformas digitais integradas como a integração das informações de vendas, estoques, faturamento e transporte por ERP, WMS, TMS e aplicativos específicos, permitindo monitoramento em tempo real."
-      }
-    ],
-    writing:{
-      prompt:"Explique como a Natura combina planejamento da malha logística, estoque descentralizado e tecnologias de automação para buscar entregas mais rápidas e controladas.",
-      criteria:["Relacionar planejamento da malha à demanda regional","Explicar o estoque descentralizado","Conectar tecnologia, monitoramento e operação"]
-    },
-    chips:["estoque descentralizado","TMS","rastreamento","planejamento logístico","central de experiência"]
-  },
-  {
-    id:"braspress",
-    emoji:"🛰️",
-    title:"Braspress · Roteirização inteligente",
-    desc:"Da automação da classificação ao TMS que ajusta rotas e rastreia entregas.",
-    duration:"≈ 25 min",
-    kicker:"ESTAÇÃO 02 · BRASPRESS",
-    keywords:["hub logístico","multimodalidade","sorter","data center tier iii","tms","roteirização","intermodalidade"],
-    narrative:[
-      `Você chega à segunda estação com a missão anterior concluída. Agora, {NOME}, o cenário muda: em vez de observar uma rede de centros de distribuição, você está diante do fluxo de uma transportadora de grande porte. A pergunta é operacional: como proteger, processar, classificar e encaminhar milhares de volumes sem perder controle? O material sobre a Braspress apresenta uma combinação de infraestrutura, tecnologia e automação que começa pela segurança e passa pela classificação de encomendas até chegar à roteirização.`,
-      `Antes de qualquer rota, existe uma rede. Um <KEY:hub logístico> é apresentado como ponto estratégico onde ocorre consolidação, armazenagem, classificação e redistribuição de mercadorias. O material também introduz os <KEY:modais de transporte> como os diferentes meios de movimentar mercadorias e apresenta a <KEY:multimodalidade> como um sistema integrado que combina dois ou mais modais em uma mesma operação, utilizando um único contrato e responsabilidade centralizada.`,
-      `<CALL:context:🧠 Você no comando|Imagine que um volume precisa atravessar uma rede grande. Não basta saber onde ele começou. Você precisa entender onde ele pode ser consolidado, classificado, encaminhado e acompanhado até o destino.</CALL>`,
-      `Na camada de infraestrutura e segurança, a Braspress investe cerca de 6% do faturamento em segurança e gerenciamento de risco, com o objetivo de zerar o número de roubo de cargas. A empresa mantém uma Central Nacional de Monitoramento e Gerenciamento de Riscos na matriz de São Paulo e coordena unidades em Campinas, Piracicaba, Rio de Janeiro, Brasília, Belo Horizonte, Porto Alegre e Recife. O monitoramento ocorre dentro da empresa com rastreadores, sensores, atuadores, cercas eletrônicas, CFTV, equipes treinadas e rastreamento 24 horas por satélite e radiocomunicação.`,
-      `<CALL:info:💡 Sabia que?|O material descreve o Data Center da empresa como projetado para suportar um gigantesco volume de tráfego de dados, com classificação <KEY:data center tier iii> e 100% de disponibilidade.</CALL>`,
-      `Então chega o gargalo que a automação precisa enfrentar: classificar os volumes. O <KEY:sorter> instalado na matriz em Guarulhos, no Complexo Planeta Azul, tem 6,4 km de extensão, capacidade de classificação de 15 mil volumes por hora, 16 linhas de entrada e 102 rampas de saída. O material também menciona outros sistemas SORTER em filiais e esteiras de aferição para dimensionamento e pesagem em cerca de 80 filiais.`,
-      `Só que classificar bem não é o mesmo que escolher a melhor rota. É aí que entra o <KEY:TMS> e, com ele, a <KEY:roteirização>. No material, o módulo de roteirização planeja rotas automaticamente, considerando restrições de tráfego, prioridades de entrega e capacidade dos veículos. As ferramentas de busca e verificação de rotas integram plataformas como o Google Maps para consultar condições de trânsito, bloqueios e alternativas em tempo real. O rastreamento acompanha o trajeto dos veículos e melhora o controle, a previsibilidade e a comunicação com os clientes.`,
-      `<CALL:warn:⚠️ Atenção!|Rota não é um desenho fixo. O próprio material destaca ajustes dinâmicos para responder a imprevistos, além de ganhos em confiança do serviço, satisfação dos clientes, redução de combustível e menor desgaste dos veículos.</CALL>`,
-      `Chegamos ao último dilema. Um cliente quer expandir para cidades do Nordeste um prazo de 48 horas que já é possível em várias capitais. O material orienta que não é possível prometer o mesmo prazo irrestritamente para todas as localidades. Distância, malha viária e oferta de voos precisam ser considerados e, quando necessário, a <KEY:intermodalidade> entre rodoviário e aéreo deve entrar no estudo. A decisão profissional é analisar a viabilidade por localidade e apresentar compromissos dentro de um diálogo transparente. Sua missão termina quando você entende que automação logística não é apertar um botão: é usar informação, tecnologia e análise para decidir melhor.`
-    ],
-    questions:[
-      {
-        q:"Uma transportadora percebe que a separação de volumes é o ponto que mais retarda o fluxo. Qual recurso do caso da Braspress atua diretamente sobre esse gargalo?",
-        options:["CFTV, pois ele classifica automaticamente todos os volumes.","O SORTER, sistema automatizado de classificação de encomendas.","Radiocomunicação, porque substitui a classificação por rádio.","Data Center TIER III, que faz a separação física das encomendas."],
-        correct:1,
-        explanation:"O material apresenta o SORTER como Sistema Automatizado de Classificação de Encomendas e informa que o sistema do Complexo Planeta Azul alcança 15 mil volumes por hora e 102 rampas de saída."
-      },
-      {
-        q:"Uma rota inicialmente definida enfrenta bloqueio de via e uma prioridade de entrega. Qual combinação de recursos, segundo o material, permite responder melhor ao imprevisto?",
-        options:["TMS com módulo de roteirização, ferramentas de verificação de rotas e rastreamento de entregas.","Estoque descentralizado sem qualquer monitoramento de trânsito.","Somente CFTV e sensores na frota, sem alteração da rota.","Apenas aumento da capacidade do veículo, mantendo a mesma rota."],
-        correct:0,
-        explanation:"O material destaca o módulo de roteirização, a integração com ferramentas como Google Maps para condições de trânsito e rotas alternativas, e o rastreamento em tempo real para controle e previsibilidade."
-      }
-    ],
-    writing:{
-      prompt:"Explique como o TMS pode ajudar a Braspress a otimizar as operações de transporte, relacionando roteirização, informações em tempo real e rastreamento.",
-      criteria:["Explicar o papel do módulo de roteirização","Relacionar trânsito/rotas alternativas a informações em tempo real","Conectar rastreamento, previsibilidade e eficiência"]
-    },
-    chips:["TMS","roteirização","Google Maps","rastreamento","rotas alternativas","intermodalidade"]
-  }
-];
-
-function defaultState(){
-  return {
-    name:"",
-    started:false,
-    station:0,
-    step:0,
-    stationStartedAt:null,
-    startTime:null,
-    elapsedBefore:0,
-    mistakes:0,
-    answers:stations.map(()=>[null,null]),
-    writings:stations.map(()=> ""),
-    completed:stations.map(()=>false),
-    viewedEnough:stations.map(()=>false)
-  };
-}
-let state = defaultState();
-let timerHandle = null;
-let readTimer = null;
-let tooltipTarget = null;
-let currentStation = 0;
-
-function safeGet(){
-  try{ const raw=localStorage.getItem(STORAGE_KEY); return raw?JSON.parse(raw):null; }catch(_){ return null; }
-}
-function safeSave(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(_){}
-}
-function safeClear(){ try{ localStorage.removeItem(STORAGE_KEY); }catch(_){ } }
-
-function normalizeState(raw){
-  const base=defaultState();
-  if(!raw || typeof raw!=="object") return base;
-  return {
-    ...base,...raw,
-    answers:Array.from({length:stations.length},(_,i)=>Array.isArray(raw.answers?.[i])?[raw.answers[i][0]??null,raw.answers[i][1]??null]:[null,null]),
-    writings:Array.from({length:stations.length},(_,i)=>typeof raw.writings?.[i]==="string"?raw.writings[i]:""),
-    completed:Array.from({length:stations.length},(_,i)=>!!raw.completed?.[i]),
-    viewedEnough:Array.from({length:stations.length},(_,i)=>!!raw.viewedEnough?.[i])
-  };
-}
-function esc(v){
-  return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-}
-function fmtTime(sec){
-  sec=Math.max(0,Math.floor(sec));
-  const m=String(Math.floor(sec/60)).padStart(2,"0"),s=String(sec%60).padStart(2,"0");
-  return `${m}:${s}`;
-}
-function totalElapsed(){
-  return (state.elapsedBefore||0)+(state.startTime?Math.floor((Date.now()-state.startTime)/1000):0);
-}
-function updateHUD(){
-  const t=fmtTime(totalElapsed());
-  ["hudTime","hudTimeC"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t});
-  ["hudMistakes","hudMistakesC"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=state.mistakes});
-  const p=state.completed.filter(Boolean).length;
-  const hp=document.getElementById("hudProgress");if(hp)hp.textContent=`${p}/${stations.length}`;
-  const hn=document.getElementById("hudName");if(hn)hn.textContent=state.name||"Aluno";
-}
-function startTimerIfNeeded(){
-  if(!state.startTime) state.startTime=Date.now();
-  if(!timerHandle) timerHandle=setInterval(()=>{updateHUD();safeSave()},1000);
-}
-function stopTimer(){
-  if(state.startTime){ state.elapsedBefore+=Math.floor((Date.now()-state.startTime)/1000); state.startTime=null; }
-  if(timerHandle){clearInterval(timerHandle);timerHandle=null}
-  safeSave();
-}
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function hydrateStart(){
-  const existing=safeGet();
-  if(existing && existing.started){
-    document.getElementById("studentName").value=existing.name||"";
-    document.getElementById("resumeBtn").style.display="inline-flex";
-  }
-}
-function validateName(){
-  const name=document.getElementById("studentName").value.trim().replace(/\s+/g," ");
-  const err=document.getElementById("nameError");
-  if(name.length<3){err.textContent="Digite pelo menos 3 caracteres.";return false;}
-  err.textContent="";state.name=name;return true;
-}
-function startMission(useSaved=false){
-  if(useSaved){
-    const raw=safeGet();
-    if(raw && raw.started){state=normalizeState(raw);startTimerIfNeeded();renderMap();showScreen("screen-b");return;}
-  }
-  if(!validateName()) return;
-  state=defaultState();state.name=document.getElementById("studentName").value.trim().replace(/\s+/g," ");state.started=true;state.startTime=Date.now();
-  safeSave();startTimerIfNeeded();renderMap();showScreen("screen-b");
-}
-function stationStatus(i){
-  if(state.completed[i]) return {label:"✅ Concluída",cls:"completed"};
-  if(i===0 || state.completed[i-1]) return {label:"▶️ Atual",cls:"current"};
-  return {label:"🔒 Bloqueada",cls:"locked"};
-}
-function renderMap(){
-  const path=document.getElementById("path");path.innerHTML="";
-  stations.forEach((st,i)=>{
-    const s=stationStatus(i);
-    const el=document.createElement("div");el.className=`glass station ${s.cls}`;
-    el.dataset.index=i;
-    el.innerHTML=`
-      <div class="station-emoji">${st.emoji}</div>
-      <div>
-        <div class="station-num">${st.kicker}</div>
-        <div class="station-title">${esc(st.title)}</div>
-        <div class="station-desc">${esc(st.desc)}</div>
-        <div class="station-meta"><span>${st.duration}</span><span>${st.questions.length} desafios</span><span>✍️ atividade escrita</span></div>
+        <button class="btn" onclick="window.print()" style="background: linear-gradient(135deg, var(--color-success), var(--color-secondary)); margin-top: 20px;">
+          🖨️ EXPORTAR BOLETIM DETALHADO (PDF)
+        </button>
       </div>
-      <div class="status">${s.label}</div>`;
-    el.addEventListener("click",()=>openStation(i));
-    path.appendChild(el);
-  });
-  updateHUD();
-}
-function openStation(i){
-  if(i>0 && !state.completed[i-1]) {
-    const el=document.querySelector(`.station[data-index="${i}"]`);
-    el?.classList.add("locked");
-    el?.animate([{transform:"translateX(0)"},{transform:"translateX(-7px)"},{transform:"translateX(7px)"},{transform:"translateX(0)"}],{duration:260});
-    return;
-  }
-  currentStation=i;
-  state.station=i;state.step=state.completed[i]?0:0;state.stationStartedAt=state.stationStartedAt||Date.now();safeSave();
-  renderStation();
-  showScreen("screen-c");
-}
-function stationHeader(st){
-  document.getElementById("stationIcon").textContent=st.emoji;
-  document.getElementById("stationKicker").textContent=st.kicker;
-  document.getElementById("stationTitle").textContent=st.title;
-  document.getElementById("stationDuration").textContent=st.duration;
-}
-function renderNarrative(i){
-  const st=stations[i], area=document.getElementById("contentArea");
-  let html=`<div class="reading-text">`;
-  st.narrative.forEach(block=>{
-    if(block.startsWith("<CALL:")){
-      const match=block.match(/^<CALL:(\w+):([\s\S]*?)<\/CALL>$/);
-      if(match){ const pieces=match[2].split("|"); html+=`<div class="callout ${match[1]}"><strong>${pieces[0]}</strong><div>${renderKeys(pieces.slice(1).join("|"))}</div></div>`; return; }
+    </div>
+
+  </div>
+
+  <div id="toast-container"></div>
+
+  <div id="teacher-modal" class="modal-overlay" style="display: none;">
+    <div class="glass-card" style="max-width: 400px; width: 100%;">
+      <h3 style="margin-bottom: 16px; color: var(--color-accent);">🔒 Reset de Dispositivo</h3>
+      <p style="font-size: 0.95rem; color: var(--color-text-muted); margin-bottom: 20px;">
+        Insira a credencial do professor para limpar os dados deste aluno e liberar o navegador para a próxima turma.
+      </p>
+      <input type="password" id="teacher-password" class="input-text" placeholder="Senha Administrativa">
+      <div style="display: flex; gap: 12px;">
+        <button class="btn" onclick="confirmTeacherReset()" style="background: var(--color-danger);">LIMPAR DADOS</button>
+        <button class="btn" onclick="closeTeacherModal()" style="background: rgba(255,255,255,0.1); color: white;">FECHAR</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="confetti-container" class="confetti-container"></div>
+
+  <script>
+    /* --------------------------------------------------------------------------
+       A. BANCO DE DADOS DAS ESTAÇÕES (REDUZIDO PARA 2 ESTAÇÕES FOCADAS)
+       -------------------------------------------------------------------------- */
+    const STATIONS_DATA = [
+      {
+        id: 1,
+        title: "Previsão de Demanda e Sazonalidade",
+        icon: "📈",
+        narrative: `
+          Olá, <strong>{NOME}</strong>! Você assumiu a coordenação de planejamento em uma grande confecção de vestuário. A diretoria precisa projetar a produção de peças para o próximo semestre e evitar dois gargalos clássicos da logística: a <em>ruptura</em> (falta de produto na prateleira) e o <em>excesso de estoque</em> (dinheiro parado e custos de armazenagem).
+          <br><br>
+          Analisando os históricos de vendas, você nota que a demanda sofre variações fortes ao longo dos meses. Em períodos quentes, alguns modelos vendem o triplo; no inverno, caem drasticamente. Para o próximo ciclo, a meta macro é absorver um aumento projetado de <strong>10% na demanda global</strong>.
+          <div class="highlight-box">
+            <strong>Você no comando, {NOME}:</strong> Como líder logístico, sua missão é aplicar o conceito de sazonalidade sobre a demanda histórica para prever com exatidão a quantidade de insumos, garantindo compras eficientes e fluxo produtivo constante.
+          </div>
+        `,
+        quizzes: [
+          {
+            question: "O que caracteriza a sazonalidade na análise da previsão de demanda logística?",
+            options: [
+              "Flutuações imprevisíveis causadas por falhas operacionais sistêmicas.",
+              "Padrões de vendas cíclicos que se repetem em períodos específicos do ano (ex: picos no verão).",
+              "A manutenção estática das vendas durante todos os meses, independente do clima ou data.",
+              "A decisão arbitrária de suspender a produção de itens essenciais."
+            ],
+            correct: 1,
+            explanation: "Sazonalidade refere-se a padrões cíclicos e repetitivos nas vendas, como o aumento natural na venda de sorvetes ou roupas de banho no verão."
+          },
+          {
+            question: "Se a previsão de demanda indica um aumento projetado nas vendas futuras, qual deve ser a decisão imediata da gestão de estoques?",
+            options: [
+              "Manter o planejamento de compras inalterado para economizar recursos.",
+              "Reduzir drasticamente o estoque de segurança.",
+              "Aumentar o planejamento de compras de insumos e adequar a capacidade do armazém.",
+              "Suspender o recebimento de novos materiais temporariamente."
+            ],
+            correct: 2,
+            explanation: "Se a previsão aponta crescimento, a cadeia de suprimentos deve reagir aumentando o planejamento de compras para evitar a ruptura de estoque no cliente final."
+          }
+        ],
+        writtenPrompt: "Reflita e redija: Quais são os impactos operacionais e financeiros diretos para a empresa se ocorrerem erros graves na previsão de demanda e no cálculo de sazonalidade dos produtos?"
+      },
+      {
+        id: 2,
+        title: "Estoque Mínimo e de Segurança",
+        icon: "🛡️",
+        narrative: `
+          Excelente leitura de cenário, <strong>{NOME}</strong>! Com a demanda projetada, enfrentamos a realidade da rua: os fornecedores de matéria-prima sofrem com o trânsito da região e frequentemente atrasam as entregas (Lead Time variável). Contudo, a linha de produção não pode parar de jeito nenhum.
+          <br><br>
+          Para blindar a operação contra o desabastecimento, você precisa dimensionar o <strong>Estoque de Segurança (ES)</strong>, também chamado de Estoque Mínimo. Esse estoque é o 'amortecedor' que absorve imprevistos logísticos e flutuações repentinas no consumo diário.
+          <div class="highlight-box">
+            <strong>Você no comando, {NOME}:</strong> Um estoque de segurança muito alto blinda a operação, mas imobiliza capital financeiro que poderia ser investido. Seu desafio é explicar tecnicamente o equilíbrio entre nível de serviço e custo financeiro.
+          </div>
+        `,
+        quizzes: [
+          {
+            question: "Qual é a função primária do Estoque de Segurança na gestão de um almoxarifado?",
+            options: [
+              "Servir exclusivamente como vitrine para clientes atacadistas.",
+              "Garantir a ocupação total da capacidade cúbica do galpão logístico.",
+              "Eliminar a necessidade de emitir novos pedidos de compra para o setor de suprimentos.",
+              "Atuar como reserva estratégica para proteger a empresa contra atrasos de fornecedores e picos de demanda."
+            ],
+            correct: 3,
+            explanation: "O estoque de segurança é o 'colchão' que impede a linha de montagem de parar caso o fornecedor atrase ou o consumo dispare fora do previsto."
+          },
+          {
+            question: "Qual o principal risco financeiro associado à manutenção de um Estoque de Segurança excessivamente alto?",
+            options: [
+              "Aumento de capital imobilizado, maiores custos de armazenagem e risco de obsolescência.",
+              "Aumento instantâneo no volume de vendas da empresa.",
+              "Redução automática dos prazos de entrega dos fornecedores.",
+              "Eliminação da necessidade de inventários cíclicos no setor."
+            ],
+            correct: 0,
+            explanation: "Manter muito estoque significa 'dinheiro parado', ocupando espaço físico caro e correndo o risco de o material estragar ou sair de linha (obsolescência)."
+          }
+        ],
+        writtenPrompt: "Descreva tecnicamente: Como a gestão correta do Estoque de Segurança auxilia a empresa a manter a eficiência na linha de produção sem sufocar o fluxo de caixa corporativo?"
+      }
+    ];
+
+    const VACILO_MESSAGES = [
+      "🚨 Opa, {NOME}! Perdeu o foco e mudou de aba? O sistema logístico registrou! (−1,0 pt)",
+      "⚠️ Eita, {NOME}! Tentou colar o texto? Aqui operamos com autenticidade! (−1,0 pt)",
+      "👀 Cadê você, {NOME}? Minimizar a tela no meio da operação não dá! (−1,0 pt)",
+      "🚫 Vacilo detectado! Tentativa de 'Ctrl+V' bloqueada pelo ERP educacional. (−1,0 pt)"
+    ];
+
+    /* --------------------------------------------------------------------------
+       B. ESTADO & LOCALSTORAGE
+       -------------------------------------------------------------------------- */
+    let state = {
+      studentName: "", started: false, currentStationIdx: 0, currentStepIdx: 0,
+      vacilos: 0, timerSeconds: 0, quizAnswers: {}, quizCorrect: {},
+      writtenAnswers: {}, completedStations: [], finished: false
+    };
+
+    let timerInterval = null;
+
+    function saveState() {
+      try { localStorage.setItem("trilha_logistica_v2", JSON.stringify(state)); } 
+      catch (e) { console.warn("Erro no localStorage", e); }
     }
-    html+=`<p>${renderKeys(block)}</p>`;
-  });
-  html+=`</div>
-    <div class="continue-bar"><div class="countdown" id="countdown">⏳ Leia por pelo menos 5 segundos antes de avançar.</div>
-    <button class="button" id="toQuiz" disabled>Avançar para o Desafio →</button></div>`;
-  area.innerHTML=html;
-  document.getElementById("readProgressBar").style.width="0%";
-  const scrollArea=document.getElementById("contentArea");
-  scrollArea.addEventListener("scroll",()=>{}, {passive:true});
-  const onScroll=()=>{const rect=scrollArea.getBoundingClientRect();const total=scrollArea.scrollHeight-window.innerHeight+Math.max(40,rect.top);const seen=Math.max(0,Math.min(1,(window.scrollY+window.innerHeight-rect.top)/Math.max(1,total+window.innerHeight)));document.getElementById("readProgressBar").style.width=(seen*100)+"%";};
-  window.addEventListener("scroll",onScroll,{passive:true});
-  const btn=document.getElementById("toQuiz");
-  let left=5;
-  clearInterval(readTimer);
-  readTimer=setInterval(()=>{
-    left--;document.getElementById("countdown").textContent=left>0?`⏳ Disponível em ${left}s...`:"✅ Leitura liberada. Você pode avançar.";
-    if(left<=0){clearInterval(readTimer);state.viewedEnough[i]=true;safeSave();btn.disabled=false;}
-  },1000);
-  btn.addEventListener("click",()=>{state.step=1;safeSave();renderQuiz(i)});
-  enableKeywords();
-}
-function renderKeys(text){
-  let safe=esc(text);
-  safe=safe.replace(/&lt;KEY:([^&]+)&gt;/g,(_,key)=>`<span class="keyword" data-key="${esc(key.toLowerCase())}">${esc(key)}</span>`);
-  return safe;
-}
-function renderQuiz(i){
-  clearInterval(readTimer); const st=stations[i], area=document.getElementById("contentArea");
-  const ans=state.answers[i];
-  area.innerHTML=`<div class="quiz-grid">
-    ${st.questions.map((q,qi)=>{
-      const answered=ans[qi]!==null;
-      return `<div class="glass quiz-card">
-        <div class="question-label">DESAFIO ${qi+1}</div>
-        <div class="question">${esc(q.q)}</div>
-        <div class="option-grid" data-q="${qi}">
-          ${q.options.map((o,oi)=>{
-            let cls="";
-            if(answered && oi===q.correct) cls="correct";
-            if(answered && ans[qi]===oi && oi!==q.correct) cls="wrong";
-            return `<button class="option ${cls}" data-q="${qi}" data-opt="${oi}" ${answered?"disabled":""}><b>${String.fromCharCode(65+oi)}.</b> ${esc(o)}</button>`;
-          }).join("")}
-        </div>
-        <div class="explanation ${answered?"show":""}" id="exp-${i}-${qi}">${answered?(ans[qi]===q.correct?"✅ ":"❌ ")+esc(q.explanation):""}</div>
-      </div>`;
-    }).join("")}
-  </div>
-  <div class="score-line">📊 <b id="partialScore">${countCorrect() } de ${i*2 + st.questions.length} acertos</b> até agora</div>
-  <div id="writingMount"></div>`;
-  document.querySelectorAll(".option:not([disabled])").forEach(btn=>btn.addEventListener("click",()=>answerQuestion(i,Number(btn.dataset.q),Number(btn.dataset.opt))));
-  if(ans.every(v=>v!==null)) renderWriting(i);
-  document.getElementById("stepBadge").textContent="Desafio";
-}
-function countCorrect(){
-  return state.answers.reduce((sum,a)=>sum+a.filter(v=>v!==null).reduce((s,v,idx)=>s+(stations[state.answers.indexOf(a)]?.questions[idx]?.correct===v?1:0),0),0);
-}
-function answerQuestion(i,qi,oi){
-  if(state.answers[i][qi]!==null) return;
-  state.answers[i][qi]=oi;
-  const q=stations[i].questions[qi];
-  const buttons=document.querySelectorAll(`.option[data-q="${qi}"]`);
-  buttons.forEach((b,k)=>{b.disabled=true;if(k===q.correct)b.classList.add("correct");if(k===oi&&oi!==q.correct)b.classList.add("wrong")});
-  const exp=document.getElementById(`exp-${i}-${qi}`);exp.textContent=(oi===q.correct?"✅ Acerto! ":"❌ Não foi dessa vez. ")+q.explanation;exp.classList.add("show");
-  playTone(oi===q.correct);
-  if(oi===q.correct) burst();
-  safeSave();
-  document.getElementById("partialScore").textContent=`${countCorrect()} de ${stations.reduce((a,s)=>a+s.questions.length,0)} acertos até agora`;
-  if(state.answers[i].every(v=>v!==null)) setTimeout(()=>renderWriting(i),180);
-}
-function renderWriting(i){
-  const st=stations[i], area=document.getElementById("contentArea");
-  const mount=document.getElementById("writingMount")||area;
-  mount.innerHTML=`
-    <div class="glass write-card" id="writingCard">
-      <div class="question-label">ATIVIDADE ESCRITA</div>
-      <h3 style="margin-top:8px">${esc(st.writing.prompt)}</h3>
-      <p class="muted">Critérios esperados:</p>
-      <div class="criteria">${st.writing.criteria.map(c=>`<span>✓ ${esc(c)}</span>`).join("")}</div>
-      <textarea id="writingInput" rows="9" maxlength="2500" placeholder="Escreva sua resposta com suas próprias palavras...">${esc(state.writings[i])}</textarea>
-      <div class="char-row"><span id="charHint">Mínimo obrigatório: ${MIN_WRITING} caracteres</span><b id="charCount">0 / 250</b></div>
-      <div class="char-bar"><i id="charBar"></i></div>
-      <div class="key-chips">${st.chips.map(c=>`<button class="chip" type="button">${esc(c)}</button>`).join("")}</div>
-      <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="button" id="finishStation" disabled>✅ Concluir Estação</button></div>
-    </div>
-    <div id="stationSuccess" class="glass success">
-      <div class="success-icon">🎯</div><h2>Missão cumprida, ${esc(state.name)}!</h2>
-      <p class="muted">Você fechou esta etapa. O próximo ponto da trilha está aguardando no mapa.</p>
-      <button class="button" id="nextBtn">${i===stations.length-1?"🏆 Ver resultado final":"➡️ Ir para a próxima estação"}</button>
-    </div>`;
-  document.getElementById("stepBadge").textContent="Atividade";
-  bindWriting(i);
-}
-function bindWriting(i){
-  const ta=document.getElementById("writingInput");
-  const update=()=>{
-    state.writings[i]=ta.value;
-    const len=[...ta.value].length;
-    const pct=Math.min(100,Math.round(len/MIN_WRITING*100));
-    document.getElementById("charCount").textContent=`${len} / ${MIN_WRITING}`;
-    document.getElementById("charBar").style.width=pct+"%";
-    document.getElementById("charBar").style.background=pct<50?"var(--danger)":pct<100?"var(--gold)":"var(--primary)";
-    document.getElementById("finishStation").disabled=len<MIN_WRITING;
-    safeSave();
-  };
-  ta.addEventListener("input",update);
-  ["paste","drop"].forEach(ev=>ta.addEventListener(ev,e=>{e.preventDefault();recordMistake(ev==="paste"?`Ei, ${state.name}! Tentou colar? −1 😈`:`Ei, ${state.name}! Arrastar texto também conta como vacilo. −1 😈`)}));
-  ta.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="v"){e.preventDefault();recordMistake(`Ops, ${state.name}! Ctrl/Cmd+V foi interceptado. −1 😈`)}});
-  document.querySelectorAll(".chip").forEach(ch=>{
-    ch.addEventListener("click",()=>insertAtCursor(ta,ch.textContent)); 
-  });
-  document.getElementById("finishStation").addEventListener("click",()=>completeStation(i));
-  document.getElementById("nextBtn").addEventListener("click",()=>{if(i===stations.length-1){showFinal();}else{openStation(i+1)}});
-  update();
-}
-function insertAtCursor(ta,text){
-  const start=ta.selectionStart,end=ta.selectionEnd,val=ta.value;
-  ta.value=val.slice(0,start)+text+val.slice(end);
-  ta.selectionStart=ta.selectionEnd=start+text.length;ta.focus();ta.dispatchEvent(new Event("input",{bubbles:true}));
-}
-function completeStation(i){
-  state.completed[i]=true;state.station=i;state.step=2;safeSave();
-  document.getElementById("writingCard").style.display="none";
-  document.getElementById("stationSuccess").classList.add("show");
-  updateHUD();burst();
-}
-function renderStation(){
-  const st=stations[currentStation];
-  stationHeader(st);
-  if(state.answers[currentStation].every(v=>v!==null) && state.writings[currentStation].length>=MIN_WRITING) renderWriting(currentStation);
-  else if(state.answers[currentStation].some(v=>v!==null)) renderQuiz(currentStation);
-  else renderNarrative(currentStation);
-  bindGlobalScroll();
-  updateHUD();
-}
-let lastScrollListenerBound=false;
-function bindGlobalScroll(){ document.getElementById("contentArea").scrollIntoView({behavior:"smooth",block:"start"}); }
-function recordMistake(message){
-  state.mistakes+=1;safeSave();showToast(message||`Ei, ${state.name}! Vacilo detectado. −1 😈`);updateHUD();
-}
-function showToast(message){
-  const wrap=document.getElementById("toastWrap"),t=document.createElement("div");t.className="toast";
-  t.innerHTML=`<b>💀 Vacilo registrado</b><div>${esc(message)}</div><small>O progresso foi salvo imediatamente.</small><div class="toast-bar"></div>`;
-  wrap.appendChild(t);setTimeout(()=>t.remove(),4000);
-}
-const leaveEvents = ["visibilitychange","blur"];
-document.addEventListener("visibilitychange",()=>{if(document.hidden && document.getElementById("screen-c").classList.contains("active"))recordMistake(`Ei, ${state.name}! Sumiu da estação por um instante. −1 😈`)});
-function playTone(correct){
-  try{
-    const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
-    const ctx=new C(),o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=correct?440:220;o.type="sine";g.gain.value=.07;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.1);
-  }catch(_){}
-}
-function burst(){
-  const c=document.getElementById("confetti"), emojis=["🎉","✨","🚚","📦","⭐","🟢"];
-  for(let i=0;i<20;i++){const s=document.createElement("span");s.textContent=emojis[Math.floor(Math.random()*emojis.length)];s.style.setProperty("--x",(Math.random()*100)+"vw");s.style.setProperty("--d",(2+Math.random()*1.8)+"s");c.appendChild(s);setTimeout(()=>s.remove(),4200)}
-}
-function enableKeywords(){
-  document.querySelectorAll(".keyword").forEach(el=>{
-    const show=()=>showTooltip(el);
-    const hide=()=>hideTooltip();
-    el.addEventListener("mouseenter",show);el.addEventListener("mouseleave",hide);
-    el.addEventListener("touchstart",e=>{e.preventDefault();show();setTimeout(hide,3600)},{passive:false});
-  });
-}
-function showTooltip(el){
-  tooltipTarget=el;const key=el.dataset.key;const text=glossary[key]||"Definição não disponível no material.";
-  document.getElementById("tipTitle").textContent=el.textContent;document.getElementById("tipText").textContent=text;
-  const tip=document.getElementById("tooltip");tip.classList.add("show");
-  const r=el.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight;
-  let left=r.left+r.width/2-tw/2,top=r.bottom+10;
-  left=Math.max(10,Math.min(window.innerWidth-tw-10,left));
-  if(top+th>window.innerHeight-10) top=r.top-th-10;
-  tip.style.left=left+"px";tip.style.top=top+"px";
-}
-function hideTooltip(){document.getElementById("tooltip").classList.remove("show");tooltipTarget=null}
-function renderGlossary(){
-  const list=document.getElementById("glossaryList");
-  list.innerHTML=Object.keys(glossary).sort().map(k=>`<div class="glossary-item"><strong>${esc(k.toUpperCase())}</strong><div class="muted" style="margin-top:5px;line-height:1.5">${esc(glossary[k])}</div></div>`).join("");
-}
-function openDrawer(){document.getElementById("drawer").classList.add("open")}
-function closeDrawer(){document.getElementById("drawer").classList.remove("open")}
-function calcScore(){
-  let correct=0;state.answers.forEach((arr,i)=>arr.forEach((v,qi)=>{if(v!==null && v===stations[i].questions[qi].correct)correct++}));
-  const writings=state.writings.filter(t=>t.length>=MIN_WRITING).length;
-  const totalQ=stations.reduce((a,s)=>a+s.questions.length,0),total=totalQ+stations.length;
-  const content=((correct+writings)/total)*10;
-  const final=Math.max(0,content-state.mistakes);
-  return {correct,writings,content,final,totalQ};
-}
-function showFinal(){
-  stopTimer();
-  const sc=calcScore();
-  document.getElementById("finalName").textContent=state.name;
-  document.getElementById("mCorrect").textContent=`${sc.correct}/${sc.totalQ}`;
-  document.getElementById("mWriting").textContent=`${sc.writings}/${stations.length}`;
-  document.getElementById("mContent").textContent=sc.content.toFixed(1).replace(".",",");
-  document.getElementById("mMistakes").textContent=state.mistakes;
-  document.getElementById("mTime").textContent=fmtTime(totalElapsed());
-  document.getElementById("mFinal").textContent=sc.final.toFixed(1).replace(".",",");
-  let msg="";
-  if(sc.final>=9) msg=`${state.name}, você dominou a missão com desempenho excepcional. O resultado mostra consistência na leitura dos casos, nos desafios e nas atividades escritas.`;
-  else if(sc.final>=7) msg=`${state.name}, excelente trabalho. Você construiu uma boa leitura operacional e já consegue conectar tecnologia, processos e transporte.`;
-  else if(sc.final>=5) msg=`${state.name}, a base está construída, mas vale treinar mais a aplicação dos conceitos aos casos práticos.`;
-  else msg=`${state.name}, este é um bom momento para reler o material e tentar novamente os desafios, reforçando as relações entre processos, tecnologia e transporte.`;
-  document.getElementById("finalMessage").textContent=msg;
-  document.getElementById("finalHint").textContent=`Nota de conteúdo: ${sc.content.toFixed(1).replace(".",",")} · Penalidade por vacilos: −${state.mistakes} · Média final: ${sc.final.toFixed(1).replace(".",",")}`;
-  document.getElementById("finalTrophy").textContent=sc.final>=7?"🏆":"🧭";
-  if(sc.final>=7) burst();
-  showScreen("screen-d");updateHUD();
-}
-function buildPrint(){
-  const sc=calcScore();
-  const id=`TRL-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${String(Math.floor(1000+Math.random()*9000))}`;
-  const date=new Date().toLocaleDateString("pt-BR");
-  let out=`<div class="print-doc">
-    <div class="print-page print-cover">
-      <div class="kicker">Trilha do Conhecimento · Educação Profissional Paulista</div>
-      <h1>Boletim de Missão</h1>
-      <h2>${esc(state.name)}</h2>
-      <p><strong>Curso:</strong> Técnico em Logística</p>
-      <p><strong>Componente:</strong> Aplicações de ferramentas de automação logística: estudos de casos</p>
-      <p><strong>Unidade:</strong> 4 · Estudo de caso: transportes</p>
-      <p><strong>Data:</strong> ${esc(date)}</p>
-      <p><strong>Escola:</strong> Não informado no material de origem</p>
-      <p><strong>Professor:</strong> Não informado no material de origem</p>
-      <p><strong>Identificador:</strong> ${esc(id)}</p>
-    </div>
-    <div class="print-page">
-      <h2>Resultado consolidado</h2>
-      <div class="print-summary">
-        <div class="print-box"><b>Acertos no quiz</b><br>${sc.correct} / ${sc.totalQ}</div>
-        <div class="print-box"><b>Redações entregues</b><br>${sc.writings} / ${stations.length}</div>
-        <div class="print-box"><b>Nota de conteúdo</b><br>${sc.content.toFixed(1).replace(".",",")} / 10</div>
-        <div class="print-box"><b>Vacilos registrados</b><br>${state.mistakes} (penalidade: −${state.mistakes} pontos)</div>
-        <div class="print-box"><b>Tempo total</b><br>${fmtTime(totalElapsed())}</div>
-        <div class="print-box"><b>MÉDIA FINAL</b><br><strong>${sc.final.toFixed(1).replace(".",",")} / 10</strong></div>
-      </div>
-    </div>`;
-  stations.forEach((st,i)=>{
-    out+=`<div class="print-page"><h2>${esc(st.title)}</h2><h3>Quiz</h3>`;
-    st.questions.forEach((q,qi)=>{
-      const ans=state.answers[i][qi], marked=ans===null?"Não respondida":q.options[ans], corr=q.options[q.correct], result=ans===q.correct?"✅ CORRETO":"❌ INCORRETO";
-      out+=`<div class="quiz-row"><p><b>${qi+1}. ${esc(q.q)}</b></p><p><b>Alternativa marcada:</b> ${esc(marked)}</p><p><b>Alternativa correta:</b> ${esc(corr)}</p><p><b>Resultado:</b> ${result}</p><p><b>Explicação:</b> ${esc(q.explanation)}</p></div>`;
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem("trilha_logistica_v2");
+        if (saved) { state = JSON.parse(saved); return true; }
+      } catch (e) { console.warn("Erro ao carregar", e); }
+      return false;
+    }
+
+    /* --------------------------------------------------------------------------
+       C. INICIALIZAÇÃO & FLUXO
+       -------------------------------------------------------------------------- */
+    window.addEventListener("DOMContentLoaded", () => {
+      if (loadState() && state.started) {
+        initUI();
+        state.finished ? (showScreen("screen-final"), renderFinalScreen()) : (showScreen("screen-map"), renderMap());
+      } else {
+        showScreen("screen-welcome");
+      }
+      setupAntiCheatListeners();
     });
-    out+=`<div class="writing-section"><h3>Atividade escrita</h3><p><b>Enunciado:</b> ${esc(st.writing.prompt)}</p><div class="student-text">${esc(state.writings[i]||"")}</div></div></div>`;
-  });
-  out+=`<div class="footer" data-student="${esc(state.name)}"></div></div>`;
-  return out;
-}
-function printReport(){
-  document.getElementById("printHost").innerHTML=buildPrint();
-  window.print();
-}
-document.getElementById("startBtn").addEventListener("click",()=>startMission(false));
-document.getElementById("resumeBtn").addEventListener("click",()=>startMission(true));
-document.getElementById("studentName").addEventListener("keydown",e=>{if(e.key==="Enter")startMission(false)});
-document.getElementById("backMap").addEventListener("click",()=>{renderMap();showScreen("screen-b")});
-document.getElementById("glossaryBtn").addEventListener("click",openDrawer);
-document.getElementById("glossaryFab").addEventListener("click",openDrawer);
-document.getElementById("drawerClose").addEventListener("click",closeDrawer);
-document.getElementById("pdfBtn").addEventListener("click",printReport);
-document.getElementById("reviewBtn").addEventListener("click",()=>{renderMap();showScreen("screen-b")});
-document.getElementById("teacherKey").addEventListener("click",()=>document.getElementById("teacherModal").classList.add("show"));
-document.getElementById("teacherCancel").addEventListener("click",()=>document.getElementById("teacherModal").classList.remove("show"));
-document.getElementById("teacherReset").addEventListener("click",()=>{
-  const pass=document.getElementById("teacherPass").value.trim();
-  if(pass.toUpperCase()==="PROFESSOR"){safeClear();location.reload()}else document.getElementById("teacherModal").classList.remove("show");
-});
-document.addEventListener("keydown",e=>{
-  if(e.ctrlKey && e.key.toLowerCase()==="m"){e.preventDefault();document.getElementById("teacherModal").classList.add("show")}
-});
-window.addEventListener("beforeunload",()=>{safeSave()});
-window.addEventListener("resize",()=>{if(tooltipTarget && document.getElementById("tooltip").classList.contains("show"))showTooltip(tooltipTarget)});
-(function init(){
-  renderGlossary();hydrateStart();
-  const raw=safeGet();
-  if(raw?.started){ state=normalizeState(raw);updateHUD(); if(state.completed.every(Boolean)){stopTimer();} else startTimerIfNeeded(); }
-})();
-</script>
+
+    function showScreen(screenId) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(screenId).classList.add("active");
+      document.getElementById("hud").style.display = screenId === "screen-welcome" ? "none" : "flex";
+    }
+
+    function startJourney() {
+      const nameInput = document.getElementById("input-student-name").value.trim();
+      if (!nameInput) return alert("Por favor, identifique-se para iniciar.");
+      state.studentName = nameInput; state.started = true;
+      saveState(); initUI(); showScreen("screen-map"); renderMap();
+    }
+
+    function initUI() {
+      document.getElementById("hud-user-name").innerText = state.studentName;
+      updateHUD(); startTimer();
+    }
+
+    function updateHUD() {
+      document.getElementById("hud-vacilos-count").innerText = state.vacilos;
+      const m = String(Math.floor(state.timerSeconds / 60)).padStart(2, '0');
+      const s = String(state.timerSeconds % 60).padStart(2, '0');
+      document.getElementById("hud-timer").innerText = `${m}:${s}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (state.started && !state.finished) {
+          state.timerSeconds++; updateHUD();
+          if (state.timerSeconds % 5 === 0) saveState();
+        }
+      }, 1000);
+    }
+
+    /* --------------------------------------------------------------------------
+       D. MAPA & LIÇÃO
+       -------------------------------------------------------------------------- */
+    function renderMap() {
+      const container = document.getElementById("trail-map-container");
+      container.innerHTML = "";
+      STATIONS_DATA.forEach((station, idx) => {
+        const isCompleted = state.completedStations.includes(idx);
+        const isCurrent = idx === state.completedStations.length && !isCompleted;
+        const isLocked = idx > state.completedStations.length;
+
+        const nodeWrapper = document.createElement("div");
+        nodeWrapper.className = "node-wrapper";
+        let btnClass = `node-btn ${isCompleted ? 'completed' : isCurrent ? 'current' : 'locked'}`;
+        let btnIcon = isCompleted ? "✅" : isLocked ? "🔒" : station.icon;
+        
+        nodeWrapper.innerHTML = `
+          <button class="${btnClass}" onclick="openStation(${idx})" ${isLocked ? 'disabled' : ''}>${btnIcon}</button>
+          <div class="node-label">Estação ${station.id}</div>
+        `;
+        if (idx < STATIONS_DATA.length - 1) {
+          nodeWrapper.innerHTML += `<div class="node-connector ${isCompleted ? 'active' : ''}"></div>`;
+        }
+        container.appendChild(nodeWrapper);
+      });
+    }
+
+    function openStation(idx) {
+      if (idx > state.completedStations.length) return;
+      state.currentStationIdx = idx; state.currentStepIdx = 0; saveState();
+      showScreen("screen-lesson"); renderLessonStep();
+    }
+
+    function renderLessonStep() {
+      const station = STATIONS_DATA[state.currentStationIdx];
+      const contentDiv = document.getElementById("lesson-step-content");
+
+      for (let i = 0; i < 3; i++) {
+        const dot = document.getElementById(`step-dot-${i}`);
+        dot.className = "step-dot";
+        if (i < state.currentStepIdx) dot.classList.add("completed");
+        if (i === state.currentStepIdx) dot.classList.add("active");
+      }
+
+      if (state.currentStepIdx === 0) {
+        const text = station.narrative.replace(/{NOME}/g, state.studentName);
+        contentDiv.innerHTML = `
+          <h3 style="color: var(--color-secondary); margin-bottom: 20px; font-size: 1.4rem;">${station.icon} ${station.title}</h3>
+          <div class="narrative-box">${text}</div>
+          <button class="btn" onclick="nextStep()">PROSSEGUIR PARA DESAFIOS ➡️</button>
+        `;
+      } 
+      else if (state.currentStepIdx === 1) {
+        let html = `<h3 style="color: var(--color-secondary); margin-bottom: 24px;">🧩 Desafios de Fixação</h3>`;
+        station.quizzes.forEach((q, qIdx) => {
+          const key = `${state.currentStationIdx}_${qIdx}`;
+          const answered = state.quizAnswers.hasOwnProperty(key);
+          const sel = state.quizAnswers[key];
+
+          html += `<div style="margin-bottom: 32px;"><p class="quiz-question">${qIdx + 1}. ${q.question}</p><div class="quiz-options">`;
+          q.options.forEach((opt, oIdx) => {
+            let cls = "option-btn";
+            if (answered) {
+              if (oIdx === q.correct) cls += " correct";
+              else if (oIdx === sel) cls += " incorrect";
+            }
+            html += `<button class="${cls}" onclick="selectQuiz(${qIdx}, ${oIdx})" ${answered ? 'disabled' : ''}>${String.fromCharCode(65 + oIdx)}) ${opt}</button>`;
+          });
+          html += `</div>`;
+          if (answered) {
+            const isCorr = state.quizCorrect[key];
+            html += `<div class="feedback-box ${isCorr ? 'correct' : 'incorrect'}">
+              <strong>${isCorr ? '✨ Correto!' : '❌ Incorreto!'}</strong><br>${q.explanation}</div>`;
+          }
+          html += `</div>`;
+        });
+        const allAns = station.quizzes.every((_, qIdx) => state.quizAnswers.hasOwnProperty(`${state.currentStationIdx}_${qIdx}`));
+        html += `<button class="btn" onclick="nextStep()" ${allAns ? '' : 'disabled'}>IR PARA REDAÇÃO TÉCNICA ➡️</button>`;
+        contentDiv.innerHTML = html;
+      } 
+      else if (state.currentStepIdx === 2) {
+        const text = state.writtenAnswers[state.currentStationIdx] || "";
+        const chars = text.length;
+        const valid = chars >= 250;
+        contentDiv.innerHTML = `
+          <h3 style="color: var(--color-secondary); margin-bottom: 16px;">✍️ Relatório Técnico</h3>
+          <p style="margin-bottom: 20px; font-size: 1.05rem; color: #e2e8f0; line-height: 1.6;">${station.writtenPrompt}</p>
+          <textarea id="written-textarea" class="input-text" placeholder="Redija sua análise detalhada (mínimo de 250 caracteres)..." oninput="handleText(this)">${text}</textarea>
+          <div id="char-counter" class="char-counter ${valid ? 'valid' : ''}">${chars} / 250 caracteres mínimos</div>
+          <button class="btn" id="btn-finish-station" onclick="finishStation()" ${valid ? '' : 'disabled'}>REGISTRAR E CONCLUIR ESTAÇÃO ✅</button>
+        `;
+        setTimeout(() => setupAreaAntiPaste(document.getElementById("written-textarea")), 50);
+      }
+    }
+
+    function selectQuiz(qIdx, oIdx) {
+      const key = `${state.currentStationIdx}_${qIdx}`;
+      if (state.quizAnswers.hasOwnProperty(key)) return;
+      state.quizAnswers[key] = oIdx;
+      state.quizCorrect[key] = (oIdx === STATIONS_DATA[state.currentStationIdx].quizzes[qIdx].correct);
+      saveState(); renderLessonStep();
+    }
+
+    function handleText(ta) {
+      const text = ta.value;
+      state.writtenAnswers[state.currentStationIdx] = text;
+      const chars = text.length;
+      const counter = document.getElementById("char-counter");
+      const btn = document.getElementById("btn-finish-station");
+      counter.innerText = `${chars} / 250 caracteres mínimos`;
+      if (chars >= 250) { counter.classList.add("valid"); btn.disabled = false; } 
+      else { counter.classList.remove("valid"); btn.disabled = true; }
+      saveState();
+    }
+
+    function nextStep() { state.currentStepIdx++; saveState(); renderLessonStep(); }
+
+    function finishStation() {
+      if (!state.completedStations.includes(state.currentStationIdx)) state.completedStations.push(state.currentStationIdx);
+      saveState();
+      if (state.completedStations.length === STATIONS_DATA.length) {
+        state.finished = true; saveState(); showScreen("screen-final"); renderFinalScreen();
+      } else {
+        showScreen("screen-map"); renderMap();
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       E. GERAÇÃO DO RELATÓRIO FINAL DETALHADO (TELA E PDF)
+       -------------------------------------------------------------------------- */
+    function calculateGrades() {
+      let totalQ = 0, correctQ = 0;
+      STATIONS_DATA.forEach((st, sIdx) => {
+        st.quizzes.forEach((_, qIdx) => {
+          totalQ++;
+          if (state.quizCorrect[`${sIdx}_${qIdx}`]) correctQ++;
+        });
+      });
+      const writtenQ = Object.keys(state.writtenAnswers).filter(k => state.writtenAnswers[k].length >= 250).length;
+      
+      const quizScore = (correctQ / totalQ) * 5.0;
+      const writtenScore = (writtenQ / STATIONS_DATA.length) * 5.0;
+      const rawScore = quizScore + writtenScore;
+      const finalGrade = Math.max(0, rawScore - state.vacilos);
+
+      return { correctQ, totalQ, rawScore: rawScore.toFixed(1), finalGrade: finalGrade.toFixed(1) };
+    }
+
+    function renderFinalScreen() {
+      const stats = calculateGrades();
+
+      // Dados do Resumo
+      document.getElementById("final-student-name").innerText = state.studentName;
+      const m = String(Math.floor(state.timerSeconds / 60)).padStart(2, '0');
+      const s = String(state.timerSeconds % 60).padStart(2, '0');
+      document.getElementById("final-time").innerText = `${m} minutos e ${s} segundos`;
+      document.getElementById("final-quizzes").innerText = stats.correctQ;
+      document.getElementById("final-raw-score").innerText = stats.rawScore;
+      document.getElementById("final-vacilos").innerText = state.vacilos;
+      document.getElementById("final-grade").innerText = stats.finalGrade;
+
+      // Mensagem de Feedback
+      const fNum = parseFloat(stats.finalGrade);
+      const feedBox = document.getElementById("final-feedback-msg");
+      if (fNum >= 8.0) {
+        feedBox.innerHTML = `<strong>🏆 EXCELÊNCIA OPERACIONAL!</strong><br>Ótimo domínio técnico dos conceitos de Demanda e Estoque. Você demonstrou visão crítica e foco impecável.`;
+        triggerConfetti();
+      } else if (fNum >= 5.0) {
+        feedBox.innerHTML = `<strong>👍 DESEMPENHO REGULAR!</strong><br>Você compreendeu as bases do planejamento, mas atente-se aos erros conceituais ou penalidades por falta de foco.`;
+      } else {
+        feedBox.innerHTML = `<strong>⚠️ ALERTA DE REVISÃO!</strong><br>A média técnica não foi atingida. É crucial retornar ao material teórico sobre parâmetros de ressuprimento e revisar seus apontamentos.`;
+      }
+
+      // ==========================================
+      // GERAÇÃO DO RELATÓRIO DETALHADO (DOM E PDF)
+      // ==========================================
+      let reportHTML = `<div style="margin-top: 40px;">`;
+      reportHTML += `<h3 style="color: var(--color-primary); border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 24px; text-transform: uppercase;">Detalhamento Analítico das Respostas</h3>`;
+
+      STATIONS_DATA.forEach((station, sIdx) => {
+        reportHTML += `<div class="detailed-report-section">`;
+        reportHTML += `<h4 style="color: var(--color-secondary); margin-bottom: 16px; font-size: 1.2rem;">Estação ${station.id}: ${station.title}</h4>`;
+
+        // Iterando sobre os Quizzes
+        reportHTML += `<h5 style="color: var(--color-text-muted); margin-bottom: 12px; font-size: 1rem;">▶️ Apuração dos Desafios (Quizzes)</h5>`;
+        station.quizzes.forEach((q, qIdx) => {
+          const key = `${sIdx}_${qIdx}`;
+          const isCorrect = state.quizCorrect[key];
+          const studentAnsIdx = state.quizAnswers[key];
+          const studentAnsText = studentAnsIdx !== undefined ? q.options[studentAnsIdx] : "Não respondido";
+          const correctAnsText = q.options[q.correct];
+
+          const colorClass = isCorrect ? 'print-correct' : 'print-incorrect';
+          const icon = isCorrect ? '✅ Acertou' : '❌ Errou';
+          const borderColor = isCorrect ? '#10b981' : '#ef4444';
+
+          reportHTML += `
+            <div style="margin-bottom: 16px; padding: 12px 16px; background: rgba(0,0,0,0.15); border-left: 4px solid ${borderColor}; border-radius: 4px;">
+              <p style="margin-bottom: 8px; font-weight: bold; font-size: 0.95rem;">Q${qIdx + 1}: ${q.question}</p>
+              <p style="margin-bottom: 4px; font-size: 0.9rem;">
+                <strong>Resposta do Aluno:</strong> <span class="${colorClass}">${studentAnsText} (${icon})</span>
+              </p>
+          `;
+          if (!isCorrect) {
+            reportHTML += `<p style="font-size: 0.9rem; color: #a1a1aa; margin-top: 6px;"><strong>Gabarito Oficial:</strong> ${correctAnsText}</p>`;
+          }
+          reportHTML += `</div>`;
+        });
+
+        // Relatório da Redação
+        reportHTML += `<h5 style="color: var(--color-text-muted); margin-top: 24px; margin-bottom: 12px; font-size: 1rem;">▶️ Apuração do Relatório Técnico (Redação)</h5>`;
+        reportHTML += `<p style="font-size: 0.85rem; margin-bottom: 8px;"><strong>Comando solicitado:</strong> <em>${station.writtenPrompt}</em></p>`;
+        
+        const writtenText = state.writtenAnswers[sIdx] || "Nenhum texto registrado.";
+        reportHTML += `<div class="print-written-box">${writtenText}</div>`;
+
+        reportHTML += `</div>`; // Fim da section da estação
+      });
+
+      reportHTML += `</div>`;
+      document.getElementById("final-detailed-report").innerHTML = reportHTML;
+    }
+
+    /* --------------------------------------------------------------------------
+       F. ANTI-FRAUDE E UTILITÁRIOS
+       -------------------------------------------------------------------------- */
+    function triggerVacilo(msgTemplate) {
+      if (!state.started || state.finished) return;
+      state.vacilos++; updateHUD(); saveState();
+      showToast(msgTemplate.replace(/{NOME}/g, state.studentName || "Estudante"));
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById("toast-container");
+      const t = document.createElement("div"); t.className = "toast"; t.innerText = msg;
+      container.appendChild(t);
+      setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity 0.5s"; setTimeout(() => t.remove(), 500); }, 4500);
+    }
+
+    function setupAntiCheatListeners() {
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden && state.started && !state.finished) {
+          triggerVacilo(VACILO_MESSAGES[Math.floor(Math.random() * VACILO_MESSAGES.length)]);
+        }
+      });
+    }
+
+    function setupAreaAntiPaste(ta) {
+      ta.addEventListener("paste", e => { e.preventDefault(); triggerVacilo("⚠️ Eita, {NOME}! Colar textos é proibido! Escreva com suas palavras. (−1,0 pt)"); });
+      ta.addEventListener("drop", e => { e.preventDefault(); triggerVacilo("⚠️ Arrastar textos é bloqueado! (−1,0 pt)"); });
+      ta.addEventListener("keydown", e => {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V')) {
+          e.preventDefault(); triggerVacilo("🚫 Atalho Ctrl+V bloqueado pelo sistema. (−1,0 pt)");
+        }
+      });
+    }
+
+    function openTeacherModal() { document.getElementById("teacher-modal").style.display = "flex"; document.getElementById("teacher-password").value = ""; }
+    function closeTeacherModal() { document.getElementById("teacher-modal").style.display = "none"; }
+    function confirmTeacherReset() {
+      if (document.getElementById("teacher-password").value === "PROFESSOR") {
+        try { localStorage.removeItem("trilha_logistica_v2"); } catch (e) {}
+        alert("Dados locais removidos. Navegador liberado."); location.reload();
+      } else alert("Credencial incorreta.");
+    }
+
+    function triggerConfetti() {
+      const c = document.getElementById("confetti-container"); c.innerHTML = "";
+      const emojis = ["📦", "📈", "⭐", "🚀", "✅"];
+      for (let i = 0; i < 40; i++) {
+        const d = document.createElement("div"); d.className = "confetti"; d.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        d.style.left = Math.random() * 100 + "%"; d.style.animationDelay = Math.random() * 2 + "s"; d.style.animationDuration = (2.5 + Math.random() * 2) + "s";
+        c.appendChild(d);
+      }
+    }
+  </script>
 </body>
 </html>
